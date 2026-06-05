@@ -115,7 +115,7 @@ npm run preview
 
 ## 📄 License
 
-All rights reserved © 2024 Dinkar Seeds
+All rights reserved © 2026 Dinkar Seeds
 
 ## 👥 Contact
 
