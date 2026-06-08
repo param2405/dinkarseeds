@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { motion, useInView as useMotionInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { 
   Factory, Microscope, Droplet, Snowflake, Package, Truck, 
-  Award, Ruler, Clock, Shield, MapPin, Play 
+  Award, Shield, MapPin, Play 
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -12,8 +12,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Infrastructure() {
   const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true });
-  const sectionRef = useRef<HTMLElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  
 
   const facilities = [
     { name: 'Processing Plant', desc: 'State-of-the-art facility with 50MT/day capacity', icon: Factory, color: 'from-emerald-600 to-green-600' },
@@ -24,14 +24,7 @@ export default function Infrastructure() {
     { name: 'Distribution Hub', desc: 'Pan-India logistics network', icon: Truck, color: 'from-purple-600 to-indigo-600' },
   ];
 
-  const highlights = [
-    { label: 'Manufacturing Plants', value: 5, suffix: '+', icon: Factory },
-    { label: 'R&D Investment', value: 'Continuous', icon: Microscope, custom: true },
-    { label: 'Quality Standards', value: 'ISO 9001:2015', icon: Shield, custom: true },
-    { label: 'Storage Capacity', value: 25000, suffix: ' MT', icon: Snowflake },
-    { label: 'Distribution Centers', value: 12, suffix: '', icon: Truck },
-    { label: 'Happy Farmers Served', value: 50000, suffix: '+', icon: Award },
-  ];
+  
 
   const certifications = [
     { name: 'ISO 9001:2015', desc: 'Quality Management System' },
@@ -53,38 +46,7 @@ export default function Infrastructure() {
           { opacity: 1, y: 0, scale: 1, stagger: 0.1, duration: 0.6, ease: 'back.out(0.4)', delay: 0.3 }
         );
 
-        // Animate highlight items
-        gsap.fromTo('.highlight-item',
-          { opacity: 0, scale: 0.8 },
-          { opacity: 1, scale: 1, stagger: 0.08, duration: 0.5, delay: 0.8 }
-        );
-
-        // Counter for numeric stats
-        const counters = {
-          plants: 0,
-          capacity: 0,
-          centers: 0,
-          farmers: 0
-        };
-        gsap.to(counters, {
-          plants: 5,
-          capacity: 25000,
-          centers: 12,
-          farmers: 50,
-          duration: 2.5,
-          ease: 'power2.out',
-          delay: 1,
-          onUpdate: () => {
-            const plantsEl = document.querySelector('.stat-plants');
-            const capacityEl = document.querySelector('.stat-capacity');
-            const centersEl = document.querySelector('.stat-centers');
-            const farmersEl = document.querySelector('.stat-farmers');
-            if (plantsEl) plantsEl.textContent = Math.floor(counters.plants) + '+';
-            if (capacityEl) capacityEl.textContent = Math.floor(counters.capacity).toLocaleString() + ' MT';
-            if (centersEl) centersEl.textContent = Math.floor(counters.centers);
-            if (farmersEl) farmersEl.textContent = (counters.farmers).toFixed(0) + 'K+';
-          }
-        });
+        
 
         // Animate certification badges
         gsap.fromTo('.cert-badge',
@@ -96,15 +58,7 @@ export default function Infrastructure() {
     }
   }, [inView]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
-  };
+  
 
   return (
     <section 
@@ -188,42 +142,7 @@ export default function Infrastructure() {
           })}
         </div>
 
-        {/* Interactive Stats Section - Redesigned as a grid of metric cards */}
-        <div className="mb-16" ref={statsRef}>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {highlights.map((item, idx) => {
-              const Icon = item.icon;
-              const isNumeric = !item.custom;
-              return (
-                <motion.div
-                  key={idx}
-                  className="highlight-item bg-white rounded-xl p-4 text-center shadow-md hover:shadow-lg transition-all group"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ delay: 0.9 + idx * 0.07 }}
-                  whileHover={{ y: -5, backgroundColor: '#f0f9f0' }}
-                >
-                  <div className="flex justify-center mb-2">
-                    <div className="p-2 bg-primary-green/10 rounded-full group-hover:bg-primary-green/20 transition-colors">
-                      <Icon className="text-primary-green" size={20} />
-                    </div>
-                  </div>
-                  {isNumeric ? (
-                    <p className="text-2xl font-poppins font-bold text-primary-green">
-                      <span className={`stat-${item.label === 'Manufacturing Plants' ? 'plants' : item.label === 'Storage Capacity' ? 'capacity' : item.label === 'Distribution Centers' ? 'centers' : 'farmers'}`}>
-                        0
-                      </span>
-                      {item.suffix}
-                    </p>
-                  ) : (
-                    <p className="text-xl font-poppins font-bold text-primary-green">{item.value}</p>
-                  )}
-                  <p className="text-xs text-gray-600 font-medium mt-1">{item.label}</p>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+        
 
         {/* Virtual Tour / Interactive Map Concept */}
         <motion.div
